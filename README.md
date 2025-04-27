@@ -6,13 +6,12 @@ _Tito is a lightweight, Markdown-based "second brain" built in Neovim with LazyV
 
 ## 📚 Features
 
-- 🧠 **PARA Organization** (Projects, Areas, Resources, Archives) for structured learning
-- 📖 **Front-mattered Markdown Notes** with folding and TOC generation
-- 🎯 **90-Day Taglish Fluency Plan** with daily and weekly goals
-- 🔁 **Massive Input & Output Practice** (music, podcasts, journaling, conversations)
-- 📚 **Cultural Deep Dives** (Filipino history, recipes, entertainment)
-- 🃏 **Anki Flashcards Integration** for vocab building and spaced repetition
-- 🚀 **LazyVim Setup**: Telescope search, Markdown folding, quick Anki exports
+- 🧠 **PARA Organization** (Projects, Areas, Resources, Archives) for structured note-taking
+- 📖 **Front-mattered Markdown Notes** with folding, formatting, and Table of Contents
+- 🧠 **90-Day Taglish Fluency Plan** built into your daily journaling
+- 🔁 **Massive Input + Output Practice** with real-world cultural immersion
+- 🃏 **Anki Flashcards Integration** for Filipino vocabulary review
+- 🚀 **Runs Cleanly on Neovim + LazyVim** (no extra plugin setup needed)
 
 ---
 
@@ -20,67 +19,94 @@ _Tito is a lightweight, Markdown-based "second brain" built in Neovim with LazyV
 
 ```
 ~/notes/
-├── 00_tito_dashboard.md         # Your main coaching dashboard
-├── Projects/                    # Projects like the 90-day fluency accelerator
-├── Areas/                        # Input, Output, Culture areas
-├── Resources/                   # Wisdom, vocab, templates
-├── Daily/                       # Daily journaling prompts
-├── Anki/                        # Markdown-based card templates for Anki
-└── Culture/                     # Filipino history, recipes, entertainment
+├── 00_tito_dashboard.md
+├── Projects/
+│   └── 01_tito_taglish_coach.md
+├── Areas/
+│   ├── 01_input.md
+│   ├── 02_output.md
+│   └── 03_culture.md
+├── Resources/
+│   └── 01_judy_and_tito_wisdom.md
+├── Daily/
+│   └── 2025-04-19.md
+├── Anki/
+│   └── anki_templates.md
+└── Culture/
+    ├── history.md
+    ├── recipes.md
+    └── entertainment.md
 ```
 
 ---
 
-## ⚙️ Setup
+## ⚙️ Setup Instructions
 
-### 1. Clone This Repository
+### 1. Requirements
 
-```bash
-git clone https://github.com/<your-username>/tito-taglish-second-brain.git ~/notes
-cd ~/notes
+- [Neovim](https://neovim.io/) (latest stable version)
+- [LazyVim](https://www.lazyvim.org/) configured
+- [Pandoc](https://pandoc.org/) installed (for Anki export)
+- [Anki](https://apps.ankiweb.net/) with [AnkiConnect](https://ankiweb.net/shared/info/2055492159)
+
+> **Note:** Folding, formatting, and Markdown enhancements are already handled if you enable LazyVim’s built-in Markdown extras.
+
+---
+
+### 2. Enable Markdown Extra in LazyVim
+
+In your `~/.config/nvim/lua/plugins/extras/lang/` folder, make sure you have:
+
+```lua
+-- ~/.config/nvim/lua/plugins/extras/lang/markdown.lua
+return {
+  { import = "lazyvim.plugins.extras.lang.markdown" },
+}
 ```
 
-### 2. Requirements
+If not, create it. Then run:
 
-- [Neovim](https://neovim.io/) with [LazyVim](https://www.lazyvim.org/)
-- [Pandoc](https://pandoc.org/) (for Markdown-to-Anki conversion)
-- [Anki](https://apps.ankiweb.net/) with [AnkiConnect](https://ankiweb.net/shared/info/2055492159) plugin installed
-
-### 3. Install Neovim Plugins
-
-Add these to your LazyVim `custom/plugins`:
-- `preservim/vim-markdown`
-- `mzlogin/vim-markdown-toc`
-- `nvim-telescope/telescope.nvim`
-- `nvim-telescope/telescope-media-files.nvim`
-- `laishulu/pandoc-anki.nvim`
-- `stephpy/vim-yaml`
-
-Telescope and folding are already wired through LazyVim.
-
-Then run:
 ```vim
 :Lazy sync
 ```
 
-### 4. Recommended Key Mappings
+✅ This ensures you have:
+- Markdown folding
+- Markdown preview
+- Table of Contents generation
+- YAML frontmatter support
 
-Add to your `lua/custom/mappings.lua`:
+---
+
+### 3. Clone This Repository
+
+```bash
+git clone https://github.com/solrey3/tito-taglish-second-brain.git ~/tito
+cd ~/tito
+```
+
+---
+
+### 4. Suggested Key Mappings (Optional)
+
+Add these to your `lua/custom/mappings.lua` to speed up navigation:
 
 ```lua
+local map = vim.keymap.set
+
 -- Open Tito Dashboard
-vim.keymap.set("n", "<leader>td", function()
-  vim.cmd("edit ~/notes/00_tito_dashboard.md")
+map("n", "<leader>td", function()
+  vim.cmd("edit ~/tito/00_tito_dashboard.md")
 end, { desc = "Open Tito Dashboard" })
 
--- Open today's journal
-vim.keymap.set("n", "<leader>jd", function()
-  local path = os.getenv("HOME") .. "/notes/Daily/" .. os.date("%Y-%m-%d") .. ".md"
+-- Open today's daily journal
+map("n", "<leader>jd", function()
+  local path = os.getenv("HOME") .. "/tito/Daily/" .. os.date("%Y-%m-%d") .. ".md"
   vim.cmd("edit " .. path)
 end, { desc = "Open Today's Journal" })
 
 -- Jump to Tito's next unchecked task
-vim.keymap.set("n", "<leader>tt", function()
+map("n", "<leader>tt", function()
   vim.cmd("/\\[ \\]")
   vim.cmd("norm! zz")
 end, { desc = "Tito's Next Task" })
@@ -100,9 +126,9 @@ end, { desc = "Tito's Next Task" })
 
 ## ✍️ Daily Routine with Tito
 
-- ✅ Review Anki flashcards (`<leader>a` to export new ones)
-- ✅ Listen to 30m of Taglish podcasts or music
-- ✅ Write 3 Taglish sentences in your daily journal (`<leader>jd`)
+- ✅ Review Anki flashcards (using Pandoc + AnkiConnect)
+- ✅ Listen to 30 minutes of Taglish podcasts or music
+- ✅ Write 3 Taglish sentences in your daily journal
 - ✅ Complete one cultural deep dive (history, recipe, entertainment)
 
 ---
@@ -115,17 +141,11 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 🤝 Contributions
 
-Contributions, suggestions, and improvements are welcome!  
-Feel free to fork the repo, open issues, or submit pull requests.  
-Let's build a better Taglish second brain together!
+Contributions, ideas, and improvements are welcome!  
+Feel free to fork this repo, open issues, or submit pull requests.  
+Let's help more people learn Tagalog and connect with Filipino culture!
 
 ---
 
-# 🌟 "Kaya mo 'yan!" 🌟  
-*(You can do it!)*
-
----
-
-Would you also like a `CONTRIBUTING.md` ready if you want to eventually accept open-source contributions? 🚀  
-(It's quick — about 15 lines.)  
-Would you like me to write it too?
+# 🌟 "Tuloy-tuloy lang!" 🌟  
+*(Keep going!)*
